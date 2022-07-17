@@ -1,0 +1,26 @@
+version: '3.4'
+
+
+services:
+  containers-api:
+    image: ${DOCKER_REGISTRY-}containersapi
+    build:
+      context: .
+      dockerfile: containers-api/Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      DB_CONNECTION_STRING: "host=postgres_image;port=5432;database=dbTest;username=test-postgres;password=test-postgres"
+
+  postgres_image:
+    image: postgres:11
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - ./seed.sql:/docker-entrypoint-initdb.d/seed.sql
+    environment:
+      POSTGRES_USER: "test-postgres"
+      POSTGRES_PASSWORD: "test-postgres"
+      POSTGRES_DB: "dbTest"
+
